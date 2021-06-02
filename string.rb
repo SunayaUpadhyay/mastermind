@@ -6,6 +6,10 @@ class String
     "\e[30m#{self}\e[0m"
   end
 
+  def white
+    "\e[37m#{self}\e[0m"
+  end
+
   def red
     "\e[31m#{self}\e[0m"
   end
