@@ -2,11 +2,6 @@
 
 # All terminal displays.
 module Display
-  # need to fill this
-  def game_intro
-    'This is game intro.'
-  end
-
   def self.prompt_play_again
     'Do you want to play again? Press Y to continue'
   end
@@ -30,11 +25,13 @@ module Display
   end
 
   def username_prompt
-    'What should we call you?'
+    'What should we call you? '
   end
 
   def user_output(code, clues)
-    "#{code}   #{show_clues(clues)}"
+    "
+    #{code}  Clues:  #{show_clues(clues)}
+    "
   end
 
   def invalid_code_entry
@@ -42,7 +39,9 @@ module Display
   end
 
   def answer(code)
-    "The correct code was #{code}"
+    "
+    Correct code: #{code}
+    "
   end
 
   def give_code
@@ -50,14 +49,20 @@ module Display
   end
 
   def show_clues(clues)
-    "Clues: #{("\u2022" * clues[:colored]).red}#{"\u25E6" * clues[:uncolored]}"
+    "#{("\u2022" * clues[:colored]).red}#{"\u25E6" * clues[:uncolored]}"
   end
 
   def declare_winner(username, tries)
-    "Congratulation, #{username} you have cracked the code in #{tries} tries."
+    "#{username} has cracked the code in #{tries.to_s.bold} tries.
+    ".blue.blink
   end
 
   def declare_loser(username, tries)
-    "#{username} were unable to crack the code in #{tries} tries."
+    "#{username} was unable to crack the code in #{tries} tries.
+    ".bold
+  end
+
+  def prompt_user_maker_code(username)
+    "#{username}, please enter a 4 digit code of range 1-6 for the computer to break"
   end
 end

@@ -3,11 +3,10 @@
 # code is an array of string
 # Manage code function
 class Code
-  attr_reader :code, :clues
+  attr_reader :code
 
   def initialize(code)
     @code = code
-    @clues = Hash.new(0)
   end
 
   def valid?
@@ -18,39 +17,41 @@ class Code
     Array.new(4).map { (1..6).to_a.sample.to_s }
   end
 
-  def get_clues(original_code) # Fix this, does work as expected 
-    dublicate = original_code.map(&:clone)
-    code.each_with_index do |s, index|
-      if s == original_code[index]
-        clues[:colored] += 1
-        dublicate.delete_at(dublicate.find_index(s))
-      elsif dublicate.find_index(s)
-        clues[:uncolored] += 1
-        dublicate.delete_at(dublicate.find_index(s))
-      end
-    end
-    @clues = clues
+  def get_clues(maker_code)
+    { colored: colored_count(maker_code),
+      uncolored: uncolored_count(maker_code) }
   end
 
-#  def num_of_colored(codemaker_code)
-#    colored_count = 0
-#    code.each_with_index do |s, index|
-#      colored_count += 1 if s == codemaker_code[index]
-#    end
-#    colored_count
-#  end
-#
-#  def num_of_uncolored
-#    code
-#  def replace_matched_code(codemaker_code)
-#    arr = Array.new(4)
-#    code.each_with_index do |s, index|
-#      arr[index] = s == codemaker_code[index] ? 'X' : s
-#    end
-#    arr
-#  end
+  def turn_maker_colored(maker_code)
+    maker_code.map.with_index { |item, index| item == code[index] ? 'X' : item }
+  end
 
-  def exact_match?
+  def turn_breaker_colored(maker_code)
+    code.map.with_index { |item, index| item == maker_code[index] ? 'X' : item }
+  end
+
+  def colored_count(maker_code)
+    turn_maker_colored(maker_code).count('X')
+  end
+
+  def uncolored_count(maker_code)
+    count = 0
+    maker_num = filter_x(turn_maker_colored(maker_code))
+    breaker_num = filter_x(turn_breaker_colored(maker_code))
+    breaker_num.each do |s|
+      if maker_num.find_index(s)
+        count += 1
+        maker_num.delete_at(maker_num.find_index(s))
+      end
+    end
+    count
+  end
+
+  def filter_x(arr)
+    arr.filter { |x| x != 'X' }
+  end
+
+  def exact_match?(clues)
     clues[:colored] == 4
   end
 
